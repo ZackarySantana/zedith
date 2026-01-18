@@ -1,0 +1,20 @@
+{
+  "Group": "dev.zedith",
+  "Name": "PartyChat",
+  "Version": "1.0.0",
+  "Description": "",
+  "Authors": [
+    {
+      "Name": "LidTop"
+    }
+  ],
+  "Website": "zedith.dev",
+  "ServerVersion": "*",
+  "Dependencies": {},
+  "OptionalDependencies": {
+    "dev.zedith:GlowText": ">=0.0.1"
+  },
+  "DisabledByDefault": false,
+  "Main": "dev.zedith.partychat.Main",
+  "IncludesAssetPack": true
+}
