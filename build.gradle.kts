@@ -1,5 +1,9 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.jvm.tasks.Jar
+
 plugins {
-    java
+    base
 }
 
 allprojects {
@@ -11,29 +15,96 @@ allprojects {
     }
 }
 
+val hytaleServerJar = rootProject.file("libs/HytaleServer.jar")
+
 // Apply only to actual mod projects (everything under :mods:*)
 configure(subprojects.filter { it.path.startsWith(":mods:") }) {
     apply(plugin = "java")
 
-    java {
+    extensions.configure<JavaPluginExtension>("java") {
         withSourcesJar()
         withJavadocJar()
     }
 
     dependencies {
-        testImplementation(platform("org.junit:junit-bom:5.10.0"))
-        testImplementation("org.junit.jupiter:junit-jupiter")
-        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+        add("testImplementation", platform("org.junit:junit-bom:5.10.0"))
+        add("testImplementation", "org.junit.jupiter:junit-jupiter")
+        add("testRuntimeOnly", "org.junit.platform:junit-platform-launcher")
 
-        compileOnly(files("${rootProject.projectDir}/libs/HytaleServer.jar"))
-        testImplementation(files("${rootProject.projectDir}/libs/HytaleServer.jar"))
+        if (hytaleServerJar.exists()) {
+            add("compileOnly", files(hytaleServerJar))
+            add("testCompileOnly", files(hytaleServerJar))
+            add("testRuntimeOnly", files(hytaleServerJar))
+        }
     }
 
-    tasks.test {
-        useJUnitPlatform()
+    tasks.withType<Test>().configureEach {
+        if (!hytaleServerJar.exists()) {
+            doFirst {
+                logger.lifecycle("libs/HytaleServer.jar not found — skipping @Tag(\"hytale\") tests.")
+            }
+        }
+
+        useJUnitPlatform {
+            if (!hytaleServerJar.exists()) {
+                excludeTags("hytale")
+            }
+        }
+
+        testLogging {
+            events = setOf(
+                TestLogEvent.FAILED,
+                TestLogEvent.PASSED,
+                TestLogEvent.SKIPPED,
+                TestLogEvent.STANDARD_OUT
+            )
+            exceptionFormat = TestExceptionFormat.FULL
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
+            showStandardStreams = true
+
+            debug {
+                events = setOf(
+                    TestLogEvent.STARTED,
+                    TestLogEvent.FAILED,
+                    TestLogEvent.PASSED,
+                    TestLogEvent.SKIPPED,
+                    TestLogEvent.STANDARD_ERROR,
+                    TestLogEvent.STANDARD_OUT
+                )
+                exceptionFormat = TestExceptionFormat.FULL
+            }
+            info.events = debug.events
+            info.exceptionFormat = debug.exceptionFormat
+        }
+
+        addTestListener(object : TestListener {
+            override fun beforeSuite(suite: TestDescriptor) {}
+            override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+                if (suite.parent == null) {
+                    val output =
+                        "Results: ${result.resultType} " +
+                                "(${result.testCount} tests, " +
+                                "${result.successfulTestCount} passed, " +
+                                "${result.failedTestCount} failed, " +
+                                "${result.skippedTestCount} skipped)"
+
+                    val startItem = "|  "
+                    val endItem = "  |"
+                    val lineLength = startItem.length + output.length + endItem.length
+                    val line = "-".repeat(lineLength)
+
+                    println("\n$line\n$startItem$output$endItem\n$line")
+                }
+            }
+
+            override fun beforeTest(testDescriptor: TestDescriptor) {}
+            override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {}
+        })
     }
 
-    tasks.jar {
+    tasks.withType<Jar>().configureEach {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
@@ -73,9 +144,9 @@ configure(subprojects.filter { it.path.startsWith(":mods:") }) {
             }
         }
 
-        dependsOn(tasks.jar)
 
-        from(tasks.jar.map { it.archiveFile })
+        dependsOn(tasks.named("jar"))
+        from(tasks.named<Jar>("jar").map { it.archiveFile })
 
         into(modsDir.map { file(it) })
     }

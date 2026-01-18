@@ -4,6 +4,7 @@ import com.hypixel.hytale.protocol.FormattedMessage;
 import com.hypixel.hytale.protocol.MaybeBool;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.util.ColorParseUtil;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
@@ -12,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GlowTest {
 
+    @Tag("hytale")
     @Test
     void withNoFormatting() {
         Message msg = Glow.parse("Hello World!");
@@ -25,6 +27,7 @@ public class GlowTest {
         assertNull(fm.children[0].color);
     }
 
+    @Tag("hytale")
     @Test
     void withSimpleColor() {
         Message msg = Glow.parse("{blue}hello{/blue}");
@@ -38,6 +41,7 @@ public class GlowTest {
         assertEquals(ColorParseUtil.colorToHex(Color.BLUE), fm.children[0].color);
     }
 
+    @Tag("hytale")
     @Test
     void withComplexColor() {
         Message msg = Glow.parse("{#453}hello{/#453}");
@@ -51,6 +55,7 @@ public class GlowTest {
         assertEquals("#453", fm.children[0].color);
     }
 
+    @Tag("hytale")
     @Test
     void withCustomColors() {
         Message msg = Glow.parse(
@@ -80,6 +85,7 @@ public class GlowTest {
         assertNull(fm.children[1].color);
     }
 
+    @Tag("hytale")
     @Test
     void withLink() {
         Message msg = Glow.parse("{#453}hello this is a {link:https://google.com}link{/link}{/#453}");
@@ -98,6 +104,7 @@ public class GlowTest {
         assertEquals("https://google.com", fm.children[1].link);
     }
 
+    @Tag("hytale")
     @Test
     void withDifferentStyleChars() {
         Message msg = Glow.parse(
@@ -127,6 +134,7 @@ public class GlowTest {
         assertEquals(MaybeBool.False, fm.children[2].italic);
     }
 
+    @Tag("hytale")
     @Test
     void withDefaultState() {
         Message msg = Glow.parse(
@@ -167,6 +175,7 @@ public class GlowTest {
         assertEquals(MaybeBool.False, fm.children[4].italic);
     }
 
+    @Tag("hytale")
     @Test
     void withCustomColorsAndDefaultState() {
         Message msg = Glow.parse(
@@ -195,6 +204,7 @@ public class GlowTest {
         assertEquals(MaybeBool.True, fm.children[0].italic);
     }
 
+    @Tag("hytale")
     @Test
     void withShorthandStyles() {
         Message msg = Glow.parse("{m}{b}hello{/b}{/m}");
@@ -210,6 +220,7 @@ public class GlowTest {
         assertEquals(MaybeBool.True, fm.children[0].monospace);
     }
 
+    @Tag("hytale")
     @Test
     void withMultipleStyles() {
         Message msg = Glow.parse("{#453}{bold}hello{/bold}{/#453}");
@@ -224,6 +235,7 @@ public class GlowTest {
         assertEquals(MaybeBool.True, fm.children[0].bold);
     }
 
+    @Tag("hytale")
     @Test
     void withMultipleChildren() {
         Message msg = Glow.parse("{#453}{bold}he{italic}ll{/italic}o{/bold}{/#453}");
@@ -249,6 +261,7 @@ public class GlowTest {
         assertEquals(MaybeBool.False, fm.children[2].italic);
     }
 
+    @Tag("hytale")
     @Test
     void withMixedChildren() {
         Message msg = Glow.parse("{#789}{bold}BOLD{italic}BOTH{/bold}ITALIC{/italic}{/#789}Nothing");
@@ -279,6 +292,7 @@ public class GlowTest {
         assertEquals(MaybeBool.False, fm.children[3].italic);
     }
 
+    @Tag("hytale")
     @Test
     void withMixedLinkAndStyle() {
         Message msg = Glow.parse("{bold}{red}Another {link:https://drive.google.com}li{/red}n{/bold}k{/link}. Fin");
