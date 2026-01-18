@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/mods" />
+            <option value="$PROJECT_DIR$/mods/Configure" />
             <option value="$PROJECT_DIR$/mods/glowtext" />
             <option value="$PROJECT_DIR$/mods/partychat" />
           </set>

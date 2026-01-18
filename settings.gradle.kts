@@ -8,3 +8,4 @@ file("mods")
         include(":mods:${dir.name}")
         project(":mods:${dir.name}").projectDir = dir
     }
+include("mods:Configure")

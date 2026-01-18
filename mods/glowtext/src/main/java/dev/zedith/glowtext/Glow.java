@@ -54,7 +54,6 @@ public class Glow {
         }
     }
 
-
     /**
      * Parses the given text.
      *
