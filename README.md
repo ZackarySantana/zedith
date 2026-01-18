@@ -27,11 +27,6 @@ tightly coupled.
 [![CurseForge Version](https://img.shields.io/curseforge/v/PARTYCHATID?logo=curseforge&label=latest)](https://www.curseforge.com/members/lidtop/projects/partychat)
 [![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/PARTYCHATID?logo=curseforge)](https://www.curseforge.com/members/lidtop/projects/partychat)
 
-🔗 **Project Page**  
-https://www.curseforge.com/members/lidtop/projects/partychat
-
-⌨️ **Code Directory**
-
 A party-based chat and messaging system built on top of Hytale’s ECS and messaging APIs.
 
 - Party-scoped chat channels
@@ -50,9 +45,6 @@ A party-based chat and messaging system built on top of Hytale’s ECS and messa
 [![CurseForge Downloads](https://img.shields.io/curseforge/dt/1434810?logo=curseforge)](https://www.curseforge.com/members/lidtop/projects/glowtext)
 [![CurseForge Version](https://img.shields.io/curseforge/v/1434810?logo=curseforge&label=latest)](https://www.curseforge.com/members/lidtop/projects/glowtext)
 [![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/1434810?logo=curseforge)](https://www.curseforge.com/members/lidtop/projects/glowtext)
-
-🔗 **Project Page**  
-https://www.curseforge.com/members/lidtop/projects/glowtext
 
 A tiny, fast text-formatting engine for Hytale messages.
 
@@ -73,9 +65,6 @@ A tiny, fast text-formatting engine for Hytale messages.
 [![CurseForge Downloads](https://img.shields.io/curseforge/dt/CONFIGUREPROJECTID?logo=curseforge)](https://www.curseforge.com/members/lidtop/projects/glowtext)
 [![CurseForge Version](https://img.shields.io/curseforge/v/CONFIGUREPROJECTID?logo=curseforge&label=latest)](https://www.curseforge.com/members/lidtop/projects/glowtext)
 [![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/CONFIGUREPROJECTID?logo=curseforge)](https://www.curseforge.com/members/lidtop/projects/glowtext)
-
-🔗 **Project Page**  
-https://www.curseforge.com/members/lidtop/projects/configure
 
 A all-in-one config editing UI.
 
