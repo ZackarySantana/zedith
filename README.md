@@ -98,3 +98,10 @@ zedith/
 [LICENSE](./LICENSE)
 
 ---
+
+## Credits
+
+- Hytale server downloader integration adapted from
+  [faststats-dev/dev-kits](https://github.com/faststats-dev/dev-kits/tree/1881337f212cb16b9832162e4e6cf2018a82beb8/hytale).
+
+---
