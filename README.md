@@ -21,11 +21,11 @@ tightly coupled.
 
 ### 🎉 PartyChat
 
-[![CurseForge Project](https://img.shields.io/badge/CurseForge-partychat-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/members/lidtop/projects/partychat)
+[![CurseForge Project](https://img.shields.io/badge/CurseForge-partychat-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/hytale/mods/partychat)
+[![CurseForge Version](https://img.shields.io/curseforge/v/PARTYCHATID?logo=curseforge&label=latest)](https://www.curseforge.com/hytale/mods/partychat/files/all)
 [![Code: mods/partychat](https://img.shields.io/badge/repo-mods%2Fpartychat-2ea44f?logo=github&label=Code)](./mods/partychat)
-[![CurseForge Downloads](https://img.shields.io/curseforge/dt/PARTYCHATID?logo=curseforge&label=downloads)](https://www.curseforge.com/members/lidtop/projects/partychat)
-[![CurseForge Version](https://img.shields.io/curseforge/v/PARTYCHATID?logo=curseforge&label=latest)](https://www.curseforge.com/members/lidtop/projects/partychat)
-[![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/PARTYCHATID?logo=curseforge)](https://www.curseforge.com/members/lidtop/projects/partychat)
+![CurseForge Downloads](https://img.shields.io/curseforge/dt/PARTYCHATID?logo=curseforge&label=downloads)
+![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/PARTYCHATID?logo=curseforge)
 
 A party-based chat and messaging system built on top of Hytale’s ECS and messaging APIs.
 
@@ -40,11 +40,11 @@ A party-based chat and messaging system built on top of Hytale’s ECS and messa
 
 ### ✨ GlowText
 
-[![CurseForge Project](https://img.shields.io/badge/CurseForge-glowtext-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/members/lidtop/projects/glowtext)
+[![CurseForge Project](https://img.shields.io/badge/CurseForge-glowtext-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/hytale/mods/glowtext)
+[![CurseForge Version](https://img.shields.io/curseforge/v/1434810?logo=curseforge&label=latest)](https://www.curseforge.com/hytale/mods/glowtext/files/all)
 [![Code: mods/glowtext](https://img.shields.io/badge/repo-mods%2Fglowtext-2ea44f?logo=github&label=Code)](./mods/glowtext)
-[![CurseForge Downloads](https://img.shields.io/curseforge/dt/1434810?logo=curseforge)](https://www.curseforge.com/members/lidtop/projects/glowtext)
-[![CurseForge Version](https://img.shields.io/curseforge/v/1434810?logo=curseforge&label=latest)](https://www.curseforge.com/members/lidtop/projects/glowtext)
-[![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/1434810?logo=curseforge)](https://www.curseforge.com/members/lidtop/projects/glowtext)
+![CurseForge Downloads](https://img.shields.io/curseforge/dt/1434810?logo=curseforge)
+![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/1434810?logo=curseforge)
 
 A tiny, fast text-formatting engine for Hytale messages.
 
@@ -60,11 +60,11 @@ A tiny, fast text-formatting engine for Hytale messages.
 
 ### ⚙️ Configure
 
-[![CurseForge Project](https://img.shields.io/badge/CurseForge-configure-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/members/lidtop/projects/configure)
+[![CurseForge Project](https://img.shields.io/badge/CurseForge-configure-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/hytale/mods/configure)
+[![CurseForge Version](https://img.shields.io/curseforge/v/CONFIGUREPROJECTID?logo=curseforge&label=latest)](https://www.curseforge.com/hytale/mods/configure/files/all)
 [![Code: mods/configure](https://img.shields.io/badge/repo-mods%2Fconfigure-2ea44f?logo=github&label=Code)](./mods/configure)
-[![CurseForge Downloads](https://img.shields.io/curseforge/dt/CONFIGUREPROJECTID?logo=curseforge)](https://www.curseforge.com/members/lidtop/projects/glowtext)
-[![CurseForge Version](https://img.shields.io/curseforge/v/CONFIGUREPROJECTID?logo=curseforge&label=latest)](https://www.curseforge.com/members/lidtop/projects/glowtext)
-[![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/CONFIGUREPROJECTID?logo=curseforge)](https://www.curseforge.com/members/lidtop/projects/glowtext)
+![CurseForge Downloads](https://img.shields.io/curseforge/dt/CONFIGUREPROJECTID?logo=curseforge)
+![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/CONFIGUREPROJECTID?logo=curseforge)
 
 A all-in-one config editing UI.
 
