@@ -133,9 +133,12 @@ val downloadServer = rootProject.tasks.register("download-server") {
 }
 
 rootProject.tasks.register("update-server") {
-    hytaleServerJar.delete()
-    hytaleZip.get().asFile.delete()
     dependsOn(tasks.named("download-server"))
+
+    doFirst {
+        hytaleServerJar.delete()
+        hytaleZip.get().asFile.delete()
+    }
 }
 
 // Apply only to actual mod projects (everything under :mods:*)
