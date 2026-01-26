@@ -56,9 +56,8 @@ A tiny, fast text-formatting engine for Hytale messages.
 - Customizable: The style tag characters (start `{` and end `}`), colors, and default applied styles can be
   set per-parse.
 - Graceful fallback: Unknown or unmatched tags are emitted as plain text rather than failing
--
 
-### [Configure](./mods/configure/README.md)
+### Configure
 
 [![CurseForge Project](https://img.shields.io/badge/CurseForge-configure-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/hytale/mods/configure)
 [![CurseForge Version](https://img.shields.io/curseforge/v/CONFIGUREPROJECTID?logo=curseforge&label=latest)](https://www.curseforge.com/hytale/mods/configure/files/all)
@@ -66,7 +65,7 @@ A tiny, fast text-formatting engine for Hytale messages.
 ![CurseForge Downloads](https://img.shields.io/curseforge/dt/CONFIGUREPROJECTID?logo=curseforge)
 ![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/CONFIGUREPROJECTID?logo=curseforge)
 
-A all-in-one config editing UI.
+An easy-to-use GUI library for editing configs. For more information, go [here](./mods/configure/README.md).
 
 ---
 
