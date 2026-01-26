@@ -15,6 +15,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     implementation(project(":mods:glowtext"))
+    implementation(project(":mods:configure"))
 }
 
 tasks.test {

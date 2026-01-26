@@ -3,7 +3,9 @@ package dev.zedith.partychat;
 import com.hypixel.hytale.server.core.event.events.player.PlayerChatEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
-import com.hypixel.hytale.server.core.util.Config;
+import dev.zedith.configure.Configure;
+import dev.zedith.configure.config.WrappedConfig;
+import dev.zedith.configure.data.ConfigMetadata;
 import dev.zedith.partychat.commands.PartyChatCommand;
 import dev.zedith.partychat.commands.PartyCommand;
 import dev.zedith.partychat.config.PartyConfig;
@@ -15,17 +17,22 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class Main extends JavaPlugin {
 
-    private final Config<PartyConfig> config;
+    private final WrappedConfig<PartyConfig> wrappedConfig;
 
     public Main(@NonNullDecl JavaPluginInit init) {
         super(init);
-        config = withConfig("PartyConfig", PartyConfig.CODEC);
+        wrappedConfig = new WrappedConfig<>(
+                PartyConfig.CODEC,
+                withConfig(PartyConfig.CODEC),
+                new ConfigMetadata("partychat")
+        );
+        Configure.registerConfig(wrappedConfig);
     }
 
     @Override
     protected void setup() {
-        config.save();
-        PartyDataManager partyDataManager = new PartyDataManager(config);
+        wrappedConfig.save();
+        PartyDataManager partyDataManager = new PartyDataManager(wrappedConfig);
         getCommandRegistry().registerCommand(new PartyCommand(partyDataManager));
         getCommandRegistry().registerCommand(new PartyChatCommand(partyDataManager));
         getEventRegistry().registerGlobal(

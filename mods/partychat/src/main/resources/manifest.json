@@ -12,7 +12,8 @@
   "ServerVersion": "*",
   "Dependencies": {},
   "OptionalDependencies": {
-    "dev.zedith:GlowText": ">=0.0.1"
+    "dev.zedith:GlowText": ">=0.0.1",
+    "dev.zedith:Configure": ">=0.0.1"
   },
   "DisabledByDefault": false,
   "Main": "dev.zedith.partychat.Main",
