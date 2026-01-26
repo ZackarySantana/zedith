@@ -60,10 +60,10 @@ A tiny, fast text-formatting engine for Hytale messages.
 ### Configure
 
 [![CurseForge Project](https://img.shields.io/badge/CurseForge-configure-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/hytale/mods/configure)
-[![CurseForge Version](https://img.shields.io/curseforge/v/CONFIGUREPROJECTID?logo=curseforge&label=latest)](https://www.curseforge.com/hytale/mods/configure/files/all)
+[![CurseForge Version](https://img.shields.io/curseforge/v/1444793?logo=curseforge&label=latest)](https://www.curseforge.com/hytale/mods/configure/files/all)
 [![Code: mods/configure](https://img.shields.io/badge/repo-mods%2Fconfigure-2ea44f?logo=github&label=Code)](./mods/configure)
-![CurseForge Downloads](https://img.shields.io/curseforge/dt/CONFIGUREPROJECTID?logo=curseforge)
-![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/CONFIGUREPROJECTID?logo=curseforge)
+![CurseForge Downloads](https://img.shields.io/curseforge/dt/1444793?logo=curseforge)
+![CurseForge Game Version](https://img.shields.io/curseforge/game-versions/1444793?logo=curseforge)
 
 An easy-to-use GUI library for editing configs. For more information, go [here](./mods/configure/README.md).
 
@@ -104,3 +104,4 @@ zedith/
   [faststats-dev/dev-kits](https://github.com/faststats-dev/dev-kits/tree/1881337f212cb16b9832162e4e6cf2018a82beb8/hytale).
 
 ---
+
