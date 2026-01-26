@@ -1,0 +1,62 @@
+$C = "../Common.ui";
+
+@DefaultTooltipBackground = (TexturePath: "../Assets/DocumentationToolTip.png", Border: 24);
+@ButtonTextTooltipStyle = TextTooltipStyle(
+  Background: @DefaultTooltipBackground,
+  MaxWidth: 400,
+  LabelStyle: (Wrap: true, FontSize: 13),
+  Padding: 24
+);
+
+Group {
+  LayoutMode: Left;
+  Anchor: (Height: 50);
+  Padding: (Vertical: 12);
+  FlexWeight: 1;
+  TooltipText: "";
+  TextTooltipStyle: @ButtonTextTooltipStyle;
+
+  Label #ConfigKey {
+    Text: "";
+    Style: (FontSize: 14, TextColor: #96a9be, VerticalAlignment: Center, RenderBold: true);
+  }
+
+  Group {
+    Anchor: (Width: 12);
+  }
+
+  $C.@TextField #ConfigStringValue {
+    Value: "";
+    FlexWeight: 1;
+    Anchor: (Height: 36);
+    Style: (TextColor: #ffffff);
+    PlaceholderText: "Text value...";
+    Visible: false;
+  }
+
+  $C.@TextField #ConfigIntValue {
+    Value: "0";
+    FlexWeight: 1;
+    Anchor: (Height: 36);
+    Style: (TextColor: #ffffff);
+    PlaceholderText: "Number value...";
+    Visible: false;
+  }
+
+  Group #ConfigCheckboxContainer {
+    FlexWeight: 1;
+    LayoutMode: Left;
+    Visible: false;
+
+    $C.@CheckBox #ConfigCheckbox {
+    }
+  }
+
+  Group {
+    Anchor: (Width: 20);
+  }
+
+  $C.@SecondaryTextButton #Reset {
+    @Text = "Reset";
+  }
+}

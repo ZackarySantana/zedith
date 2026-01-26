@@ -1,0 +1,121 @@
+$C = "../Common.ui";
+
+SceneBlur {}
+
+Group {
+  LayoutMode: Middle;
+  Anchor: (Width: 900, Height: 800);
+
+  $C.@DecoratedContainer {
+
+    #Title {
+      $C.@Title #PageTitle {
+        @Text = "";
+      }
+    }
+
+    #Content {
+      LayoutMode: Top;
+      Padding: 30;
+
+      Group {
+        LayoutMode: Left;
+
+        Group {
+          LayoutMode: Top;
+          FlexWeight: 5;
+
+          Label {
+            Text: "Search Filter:";
+          }
+
+          $C.@TextField #Filter {
+            Value: "";
+            Style: (TextColor: #ffffff);
+            PlaceholderText: "Filter by...";
+          }
+        }
+
+        Group {
+          Anchor: (Width: 10);
+        }
+
+        Group {
+          LayoutMode: Top;
+          FlexWeight: 1;
+
+          Label {
+            Text: "Page Size:";
+          }
+
+          $C.@TextField #PageSize {
+            Value: "5";
+            Style: (TextColor: #ffffff);
+            PlaceholderText: "Page size...";
+          }
+        }
+      }
+
+      Group {
+        FlexWeight: 1;
+        LayoutMode: TopScrolling;
+        ScrollbarStyle: $C.@DefaultScrollbarStyle;
+        Padding: (Full: 10);
+
+        Group #ListItems {
+          LayoutMode: Top;
+        }
+      }
+
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 50);
+        Padding: (Top: 10);
+
+        Label #TotalItems {
+          Text: "";
+          Style: (FontSize: 13, TextColor: #96a9be(0.7), VerticalAlignment: Center);
+          FlexWeight: 1;
+        }
+
+        Group {
+          Anchor: (Width: 10);
+        }
+
+        Group {
+          FlexWeight: 1;
+          LayoutMode: Left;
+
+          $C.@SecondaryTextButton #PreviousPageButton {
+            @Text = "‹";
+            Disabled: true;
+          }
+
+          Group {
+            Anchor: (Width: 10);
+          }
+
+          $C.@SecondaryTextButton #NextPageButton {
+            @Text = "›";
+          }
+        }
+
+        Group {
+          Anchor: (Width: 10);
+        }
+
+        $C.@TertiaryTextButton #GoBackButton {
+          @Text = "Go back";
+        }
+
+        Group {
+          Anchor: (Width: 10);
+        }
+
+        $C.@TextButton #Save {
+          @Text = "Save and go back";
+        }
+      }
+    }
+  }
+}

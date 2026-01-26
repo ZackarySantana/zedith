@@ -1,0 +1,21 @@
+$C = "../Common.ui";
+
+Group {
+  LayoutMode: Left;
+  Anchor: (Height: 50);
+  Padding: (Vertical: 12);
+  FlexWeight: 1;
+
+  Label #Name {
+    Text: "";
+    Style: (FontSize: 14, TextColor: #96a9be, VerticalAlignment: Center, RenderBold: true);
+  }
+
+  Group {
+    FlexWeight: 1;
+  }
+
+  $C.@SecondaryTextButton #Open {
+    @Text = "Open";
+  }
+}
