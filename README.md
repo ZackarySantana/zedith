@@ -19,7 +19,7 @@ tightly coupled.
 
 ## 🎮 Gameplay Mods
 
-### 🎉 PartyChat
+### PartyChat
 
 [![CurseForge Project](https://img.shields.io/badge/CurseForge-partychat-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/hytale/mods/partychat)
 [![CurseForge Version](https://img.shields.io/curseforge/v/PARTYCHATID?logo=curseforge&label=latest)](https://www.curseforge.com/hytale/mods/partychat/files/all)
@@ -38,7 +38,7 @@ A party-based chat and messaging system built on top of Hytale’s ECS and messa
 
 ## 📚 Libraries
 
-### ✨ GlowText
+### GlowText
 
 [![CurseForge Project](https://img.shields.io/badge/CurseForge-glowtext-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/hytale/mods/glowtext)
 [![CurseForge Version](https://img.shields.io/curseforge/v/1434810?logo=curseforge&label=latest)](https://www.curseforge.com/hytale/mods/glowtext/files/all)
@@ -58,7 +58,7 @@ A tiny, fast text-formatting engine for Hytale messages.
 - Graceful fallback: Unknown or unmatched tags are emitted as plain text rather than failing
 -
 
-### ⚙️ [Configure](./mods/configure/README.md)
+### [Configure](./mods/configure/README.md)
 
 [![CurseForge Project](https://img.shields.io/badge/CurseForge-configure-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/hytale/mods/configure)
 [![CurseForge Version](https://img.shields.io/curseforge/v/CONFIGUREPROJECTID?logo=curseforge&label=latest)](https://www.curseforge.com/hytale/mods/configure/files/all)
@@ -70,14 +70,14 @@ A all-in-one config editing UI.
 
 ---
 
-## 🧱 Repository Structure
+## Repository Structure
 
 ```markdown
 zedith/
 ├─ mods/
+│ ├─ configure/
 │ ├─ glowtext/
-│ └─ partychat/
-│ └─ configure/
+│ ├─ partychat/
 │ └─ ...
 ├─ imgs/ # README assets
 ├─ build.gradle.kts
@@ -93,7 +93,7 @@ zedith/
 
 ---
 
-## 📜 License
+## License
 
 [LICENSE](./LICENSE)
 
