@@ -58,7 +58,7 @@ A tiny, fast text-formatting engine for Hytale messages.
 - Graceful fallback: Unknown or unmatched tags are emitted as plain text rather than failing
 -
 
-### ⚙️ Configure
+### ⚙️ [Configure](./mods/configure/README.md)
 
 [![CurseForge Project](https://img.shields.io/badge/CurseForge-configure-f16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/hytale/mods/configure)
 [![CurseForge Version](https://img.shields.io/curseforge/v/CONFIGUREPROJECTID?logo=curseforge&label=latest)](https://www.curseforge.com/hytale/mods/configure/files/all)

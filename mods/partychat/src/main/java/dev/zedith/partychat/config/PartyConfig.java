@@ -7,118 +7,119 @@ public class PartyConfig {
 
     public static final BuilderCodec<PartyConfig> CODEC =
             BuilderCodec.builder(PartyConfig.class, PartyConfig::new)
-                        .append(
-                                new KeyedCodec<>("PlayerSendChatFormat", BuilderCodec.STRING),
-                                PartyConfig::setPlayerSendChatFormat,
-                                PartyConfig::getPlayerSendChatFormat
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("SystemPrefix", BuilderCodec.STRING),
-                                PartyConfig::setSystemPrefix,
-                                PartyConfig::getSystemPrefix
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("CreatePartyMessage", BuilderCodec.STRING),
-                                PartyConfig::setCreatePartyMessage,
-                                PartyConfig::getCreatePartyMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("NotLeaderInviteMessage", BuilderCodec.STRING),
-                                PartyConfig::setNotLeaderInviteMessage,
-                                PartyConfig::getNotLeaderInviteMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("InviteeNotOnlineMessage", BuilderCodec.STRING),
-                                PartyConfig::setInviteeNotOnlineMessage,
-                                PartyConfig::getInviteeNotOnlineMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("AlreadyInPartyMessage", BuilderCodec.STRING),
-                                PartyConfig::setAlreadyInPartyMessage,
-                                PartyConfig::getAlreadyInPartyMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("InviteAnnounceToPartyMessage", BuilderCodec.STRING),
-                                PartyConfig::setInviteAnnounceToPartyMessage,
-                                PartyConfig::getInviteAnnounceToPartyMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("AlreadyInvitedMessage", BuilderCodec.STRING),
-                                PartyConfig::setAlreadyInvitedMessage,
-                                PartyConfig::getAlreadyInvitedMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("InviteSentToInviteeMessage", BuilderCodec.STRING),
-                                PartyConfig::setInviteSentToInviteeMessage,
-                                PartyConfig::getInviteSentToInviteeMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("NoInviteToAcceptMessage", BuilderCodec.STRING),
-                                PartyConfig::setNoInviteToAcceptMessage,
-                                PartyConfig::getNoInviteToAcceptMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("NoInviteFromInviterMessage", BuilderCodec.STRING),
-                                PartyConfig::setNoInviteFromInviterMessage,
-                                PartyConfig::getNoInviteFromInviterMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("JoinPartyAnnounceMessage", BuilderCodec.STRING),
-                                PartyConfig::setJoinPartyAnnounceMessage,
-                                PartyConfig::getJoinPartyAnnounceMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("JoinedPartyLedByMessage", BuilderCodec.STRING),
-                                PartyConfig::setJoinedPartyLedByMessage,
-                                PartyConfig::getJoinedPartyLedByMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("NoPartyToLeaveMessage", BuilderCodec.STRING),
-                                PartyConfig::setNoPartyToLeaveMessage,
-                                PartyConfig::getNoPartyToLeaveMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("LeavePartyAnnounceMessage", BuilderCodec.STRING),
-                                PartyConfig::setLeavePartyAnnounceMessage,
-                                PartyConfig::getLeavePartyAnnounceMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("DisbandPartyLeaderLeftMessage", BuilderCodec.STRING),
-                                PartyConfig::setDisbandPartyLeaderLeftMessage,
-                                PartyConfig::getDisbandPartyLeaderLeftMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("NoPartyToListMessage", BuilderCodec.STRING),
-                                PartyConfig::setNoPartyToListMessage,
-                                PartyConfig::getNoPartyToListMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("ListHeaderMessage", BuilderCodec.STRING),
-                                PartyConfig::setListHeaderMessage,
-                                PartyConfig::getListHeaderMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("ListLeaderFormat", BuilderCodec.STRING),
-                                PartyConfig::setListLeaderFormat,
-                                PartyConfig::getListLeaderFormat
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("ListMembersFormat", BuilderCodec.STRING),
-                                PartyConfig::setListMembersFormat,
-                                PartyConfig::getListMembersFormat
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("PartyModeEnabledMessage", BuilderCodec.STRING),
-                                PartyConfig::setPartyModeEnabledMessage,
-                                PartyConfig::getPartyModeEnabledMessage
-                        ).add()
-                        .append(
-                                new KeyedCodec<>("NotInPartyMessage", BuilderCodec.STRING),
-                                PartyConfig::setNotInPartyMessage,
-                                PartyConfig::getNotInPartyMessage
-                        ).add()
-                        .build()
-            ;
+                    .append(
+                            new KeyedCodec<>("PlayerSendChatFormat", BuilderCodec.STRING),
+                            PartyConfig::setPlayerSendChatFormat,
+                            PartyConfig::getPlayerSendChatFormat
+                    ).documentation("This decides the format in which party chats will show up. From this plugin, " +
+                            "you can use '[SENDER]', '[RECEIVER]', and [MESSAGE] as placeholders. Other plugins can " +
+                            "add more.").add()
+                    .append(
+                            new KeyedCodec<>("SystemPrefix", BuilderCodec.STRING),
+                            PartyConfig::setSystemPrefix,
+                            PartyConfig::getSystemPrefix
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("CreatePartyMessage", BuilderCodec.STRING),
+                            PartyConfig::setCreatePartyMessage,
+                            PartyConfig::getCreatePartyMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("NotLeaderInviteMessage", BuilderCodec.STRING),
+                            PartyConfig::setNotLeaderInviteMessage,
+                            PartyConfig::getNotLeaderInviteMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("InviteeNotOnlineMessage", BuilderCodec.STRING),
+                            PartyConfig::setInviteeNotOnlineMessage,
+                            PartyConfig::getInviteeNotOnlineMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("AlreadyInPartyMessage", BuilderCodec.STRING),
+                            PartyConfig::setAlreadyInPartyMessage,
+                            PartyConfig::getAlreadyInPartyMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("InviteAnnounceToPartyMessage", BuilderCodec.STRING),
+                            PartyConfig::setInviteAnnounceToPartyMessage,
+                            PartyConfig::getInviteAnnounceToPartyMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("AlreadyInvitedMessage", BuilderCodec.STRING),
+                            PartyConfig::setAlreadyInvitedMessage,
+                            PartyConfig::getAlreadyInvitedMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("InviteSentToInviteeMessage", BuilderCodec.STRING),
+                            PartyConfig::setInviteSentToInviteeMessage,
+                            PartyConfig::getInviteSentToInviteeMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("NoInviteToAcceptMessage", BuilderCodec.STRING),
+                            PartyConfig::setNoInviteToAcceptMessage,
+                            PartyConfig::getNoInviteToAcceptMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("NoInviteFromInviterMessage", BuilderCodec.STRING),
+                            PartyConfig::setNoInviteFromInviterMessage,
+                            PartyConfig::getNoInviteFromInviterMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("JoinPartyAnnounceMessage", BuilderCodec.STRING),
+                            PartyConfig::setJoinPartyAnnounceMessage,
+                            PartyConfig::getJoinPartyAnnounceMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("JoinedPartyLedByMessage", BuilderCodec.STRING),
+                            PartyConfig::setJoinedPartyLedByMessage,
+                            PartyConfig::getJoinedPartyLedByMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("NoPartyToLeaveMessage", BuilderCodec.STRING),
+                            PartyConfig::setNoPartyToLeaveMessage,
+                            PartyConfig::getNoPartyToLeaveMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("LeavePartyAnnounceMessage", BuilderCodec.STRING),
+                            PartyConfig::setLeavePartyAnnounceMessage,
+                            PartyConfig::getLeavePartyAnnounceMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("DisbandPartyLeaderLeftMessage", BuilderCodec.STRING),
+                            PartyConfig::setDisbandPartyLeaderLeftMessage,
+                            PartyConfig::getDisbandPartyLeaderLeftMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("NoPartyToListMessage", BuilderCodec.STRING),
+                            PartyConfig::setNoPartyToListMessage,
+                            PartyConfig::getNoPartyToListMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("ListHeaderMessage", BuilderCodec.STRING),
+                            PartyConfig::setListHeaderMessage,
+                            PartyConfig::getListHeaderMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("ListLeaderFormat", BuilderCodec.STRING),
+                            PartyConfig::setListLeaderFormat,
+                            PartyConfig::getListLeaderFormat
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("ListMembersFormat", BuilderCodec.STRING),
+                            PartyConfig::setListMembersFormat,
+                            PartyConfig::getListMembersFormat
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("PartyModeEnabledMessage", BuilderCodec.STRING),
+                            PartyConfig::setPartyModeEnabledMessage,
+                            PartyConfig::getPartyModeEnabledMessage
+                    ).add()
+                    .append(
+                            new KeyedCodec<>("NotInPartyMessage", BuilderCodec.STRING),
+                            PartyConfig::setNotInPartyMessage,
+                            PartyConfig::getNotInPartyMessage
+                    ).add()
+                    .build();
 
     // Chat prefix format
     private String playerSendChatFormat = "[[SENDER] -> [RECEIVER]] [MESSAGE]";
