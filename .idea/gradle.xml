@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/mods/configure" />
             <option value="$PROJECT_DIR$/mods/glowtext" />
             <option value="$PROJECT_DIR$/mods/partychat" />
+            <option value="$PROJECT_DIR$/mods/runeforge" />
           </set>
         </option>
       </GradleProjectSettings>
