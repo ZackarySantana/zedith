@@ -15,6 +15,6 @@
     "dev.zedith:GlowText": ">=0.0.1"
   },
   "DisabledByDefault": false,
-  "Main": "dev.zedith.configure.Configure",
+  "Main": "dev.zedith.configure.Main",
   "IncludesAssetPack": true
 }
