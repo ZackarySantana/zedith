@@ -1,12 +1,14 @@
 package dev.zedith.configure.pages;
 
 import com.hypixel.hytale.codec.ExtraInfo;
+import com.hypixel.hytale.codec.exception.CodecValidationException;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
@@ -15,19 +17,17 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.zedith.configure.config.WrappedConfig;
 import dev.zedith.configure.data.ConfigEvent;
 import dev.zedith.configure.data.ConfigEventType;
-import org.bson.BsonBoolean;
-import org.bson.BsonDocument;
-import org.bson.BsonInt32;
-import org.bson.BsonString;
+import org.bson.*;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ConfigPage<T> extends InteractiveCustomUIPage<ConfigEvent> {
 
     private final WrappedConfig<T> config;
     private final List<String> codecKeys;
-    private final BsonDocument currentDocument;
+    private final BsonDocument currentDocument, defaultDocument;
 
     private String filterString = "";
     private List<String> filteredKeys;
@@ -40,7 +40,22 @@ public class ConfigPage<T> extends InteractiveCustomUIPage<ConfigEvent> {
         this.config = config;
         this.codecKeys = this.filteredKeys = config.codec().getEntries().keySet().stream().sorted().toList();
 
-        this.currentDocument = config.read((c) -> config.codec().encode(c, ExtraInfo.THREAD_LOCAL.get()));
+        ExtraInfo extraInfo = ExtraInfo.THREAD_LOCAL.get();
+        this.currentDocument = config.read((c) -> config.codec().encode(c, extraInfo));
+        this.defaultDocument = config.codec().encode(config.codec().getDefaultValue(extraInfo), extraInfo);
+    }
+
+    protected void openPage(
+            Ref<EntityStore> ref,
+            Store<EntityStore> store,
+            CustomUIPage page
+    ) {
+        Player player = store.getComponent(ref, Player.getComponentType());
+        if (player == null) {
+            return;
+        }
+
+        player.getPageManager().openCustomPage(ref, store, page);
     }
 
     @Override
@@ -54,7 +69,18 @@ public class ConfigPage<T> extends InteractiveCustomUIPage<ConfigEvent> {
         cmds.set("#Filter.Value", filterString);
 
         buildConfigList(cmds, events);
-        addPageButtonBindings(events);
+
+        events.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#PreviousPageButton",
+                ConfigEvent.pageEvent(ConfigEventType.SET_PAGE2, "-1")
+        );
+
+        events.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#NextPageButton",
+                ConfigEvent.pageEvent(ConfigEventType.SET_PAGE2, "1")
+        );
 
         events.addEventBinding(
                 CustomUIEventBindingType.ValueChanged,
@@ -90,6 +116,9 @@ public class ConfigPage<T> extends InteractiveCustomUIPage<ConfigEvent> {
         int totalItems = filteredKeys.size();
         int finalPage = (int) Math.ceil((double) totalItems / pageSize) - 1;
 
+        // Ensure that the current page is within 0 - finalPage.
+        this.currentPage = Math.max(Math.min(finalPage, currentPage), 0);
+
         Element.TotalItems.setText(
                 cmds, startOfPage, endOfPage, totalItems, currentPage + 1, finalPage + 1
         );
@@ -116,20 +145,6 @@ public class ConfigPage<T> extends InteractiveCustomUIPage<ConfigEvent> {
         }
     }
 
-    private void addPageButtonBindings(UIEventBuilder events) {
-        events.addEventBinding(
-                CustomUIEventBindingType.Activating,
-                "#PreviousPageButton",
-                ConfigEvent.pageEvent(ConfigEventType.SET_PAGE, String.valueOf(this.currentPage - 1))
-        );
-
-        events.addEventBinding(
-                CustomUIEventBindingType.Activating,
-                "#NextPageButton",
-                ConfigEvent.pageEvent(ConfigEventType.SET_PAGE, String.valueOf(this.currentPage + 1))
-        );
-    }
-
     @Override
     public void handleDataEvent(
             @NonNullDecl Ref<EntityStore> ref,
@@ -137,95 +152,75 @@ public class ConfigPage<T> extends InteractiveCustomUIPage<ConfigEvent> {
             @NonNullDecl ConfigEvent data
     ) {
         int idx = data.getIndexOnPage() + this.currentPage * this.pageSize;
-
-        String key = "";
-        if (idx < filteredKeys.size()) {
-            key = filteredKeys.get(idx);
-        }
+        String key = idx < filteredKeys.size() ? filteredKeys.get(idx) : null;
         UICommandBuilder cmds = new UICommandBuilder();
         UIEventBuilder events = new UIEventBuilder();
 
+        Consumer<BsonValue> setValue = (value) -> {
+            String selector;
+            Consumer<BsonValue> setToOld;
+            if (value.isString()) {
+                selector = "#ListItems[%d] #ConfigStringValue.Value".formatted(data.getIndexOnPage());
+                setToOld = (toValue) -> cmds.set(selector, toValue.asString().getValue());
+            } else if (value.isInt32()) {
+                selector = "#ListItems[%d] #ConfigIntValue.Value".formatted(data.getIndexOnPage());
+                setToOld = (toValue) -> cmds.set(selector, Integer.toString(toValue.asInt32().getValue()));
+            } else if (value.isBoolean()) {
+                selector = "#ListItems[%d] #ConfigCheckbox.Value".formatted(data.getIndexOnPage());
+                setToOld = (toValue) -> cmds.set(selector, toValue.asBoolean().getValue());
+            } else {
+                // TODO: Error case.
+                this.sendUpdate(cmds);
+                return;
+            }
+
+            BsonValue currentValue = currentDocument.get(key);
+            if (data.hasDataParseError()) {
+                if (!data.isDataEmpty()) {
+                    setToOld.accept(currentValue);
+                }
+
+                this.sendUpdate(cmds);
+                return;
+            }
+
+            currentDocument.put(key, value);
+            try {
+                config.codec().decode(currentDocument, ExtraInfo.THREAD_LOCAL.get());
+            } catch (CodecValidationException e) {
+                currentDocument.replace(key, currentValue);
+                if (!data.isDataEmpty()) {
+                    setToOld.accept(currentValue);
+                }
+
+                this.sendUpdate(cmds);
+                return;
+            }
+
+            setToOld.accept(value);
+            this.sendUpdate(cmds);
+        };
+
         switch (data.getAction()) {
-            case ConfigEventType.STR_CONFIG_VALUE_CHANGE_EVENT:
-                currentDocument.replace(key, new BsonString(data.getStrVal()));
-                this.sendUpdate(cmds);
-                break;
-            case ConfigEventType.INT_CONFIG_VALUE_CHANGE_EVENT:
-                // If there was an error parsing, set it back to the current value.
-                if (data.hasDataParseError()) {
-                    if (!data.dataIsEmpty()) {
-                        cmds.set(
-                                "#ListItems[%d] #ConfigIntValue.Value".formatted(data.getIndexOnPage()),
-                                Integer.toString(currentDocument.get(key).asInt32().getValue())
-                        );
-                    }
-                    this.sendUpdate(cmds);
-                    break;
-                }
-                currentDocument.replace(key, new BsonInt32(data.getIntVal()));
-                this.sendUpdate(cmds);
-                break;
-            case ConfigEventType.BOOL_CONFIG_VALUE_CHANGE_EVENT:
-                currentDocument.replace(key, new BsonBoolean(data.getBoolVal()));
-                this.sendUpdate(cmds);
-                break;
-            case ConfigEventType.RESET_VALUE:
-                ExtraInfo extraInfo = ExtraInfo.THREAD_LOCAL.get();
-                var defaultDoc = config.codec().encode(config.codec().getDefaultValue(extraInfo), extraInfo);
-                var fKey = filteredKeys.get(data.getIntVal() + this.currentPage * this.pageSize);
-                var defaultValue = defaultDoc.get(fKey);
-
-                currentDocument.replace(fKey, defaultValue);
-
-                switch (defaultValue.getBsonType()) {
-                    case STRING:
-                        cmds.set(
-                                "#ListItems[%d] #ConfigStringValue.Value".formatted(data.getIntVal()),
-                                defaultValue.asString().getValue()
-                        );
-                        break;
-                    case INT32:
-                        cmds.set(
-                                "#ListItems[%d] #ConfigIntValue.Value".formatted(data.getIntVal()),
-                                Integer.toString(defaultValue.asInt32().getValue())
-                        );
-                        break;
-                    case BOOLEAN:
-                        cmds.set(
-                                "#ListItems[%d] #ConfigCheckbox.Value".formatted(data.getIntVal()),
-                                defaultValue.asBoolean().getValue()
-                        );
-                        break;
-                }
-
-                this.sendUpdate(cmds);
-                break;
-            case ConfigEventType.FILTER_KEYS:
-                filterString = data.getStrVal();
-
-                // If the filter string does not have a capital, treat the search as case-insensitive.
-                if (!hasCapital(filterString)) {
-                    filteredKeys = codecKeys.stream().filter(
-                                    (codecKey) -> codecKey.toLowerCase().contains(filterString))
-                            .toList();
-                } else {
-                    filteredKeys = codecKeys.stream().filter((codecKey) -> codecKey.contains(filterString)).toList();
-                }
-
-                int finalPage = (int) Math.ceil((double) filteredKeys.size() / pageSize) - 1;
-                this.currentPage = Math.max(Math.min(finalPage, currentPage), 0);
-                addPageButtonBindings(events);
-
+            case STR_CONFIG_VALUE_CHANGE_EVENT -> setValue.accept(new BsonString(data.getStrVal()));
+            case INT_CONFIG_VALUE_CHANGE_EVENT -> setValue.accept(new BsonInt32(data.getIntVal()));
+            case BOOL_CONFIG_VALUE_CHANGE_EVENT -> setValue.accept(new BsonBoolean(data.getBoolVal()));
+            case RESET_VALUE -> setValue.accept(defaultDocument.get(key));
+            case FILTER_KEYS -> {
+                this.filterString = data.getStrVal();
+                this.filteredKeys = codecKeys.stream().filter(
+                        (codecKey) -> codecKey.toLowerCase().contains(this.filterString)
+                ).toList();
                 this.buildConfigList(cmds, events);
                 this.sendUpdate(cmds, events, false);
-                break;
-            case ConfigEventType.SET_PAGE:
-                this.currentPage = data.getIntVal();
+            }
+            case SET_PAGE2 -> {
+                this.currentPage += data.getIntVal();
                 this.rebuild();
-                break;
-            case ConfigEventType.CHANGE_PAGE_SIZE:
+            }
+            case CHANGE_PAGE_SIZE -> {
                 if (data.hasDataParseError()) {
-                    if (!data.dataIsEmpty()) {
+                    if (!data.isDataEmpty()) {
                         cmds.set(
                                 "#PageSize.Value",
                                 Integer.toString(this.pageSize)
@@ -240,32 +235,23 @@ public class ConfigPage<T> extends InteractiveCustomUIPage<ConfigEvent> {
                 this.pageSize = data.getIntVal();
                 this.buildConfigList(cmds, events);
                 this.sendUpdate(cmds, events, false);
-                break;
-            case ConfigEventType.SAVE:
-                config.saveFrom(config.codec().decode(currentDocument, ExtraInfo.THREAD_LOCAL.get()));
-            case ConfigEventType.OPEN_MODS_PAGE:
-                Player player = store.getComponent(ref, Player.getComponentType());
-                if (player == null) {
-                    return;
+            }
+            case SAVE -> {
+                try {
+                    config.saveFrom(config.codec().decode(currentDocument, ExtraInfo.THREAD_LOCAL.get()));
+                    openPage(ref, store, new ConfigSelectorPage(playerRef));
+                } catch (CodecValidationException e) {
+                    // TODO: This should be a notification.
+                    playerRef.sendMessage(Message.raw("There was an error saving."));
+                    this.sendUpdate();
                 }
-
-                player.getPageManager().openCustomPage(ref, store, new ConfigSelectorPage(playerRef));
-                break;
-            case ConfigEventType.CLOSE:
-                this.close();
-                break;
-            default:
-                playerRef.sendMessage(Message.raw("invalid action"));
+            }
+            case OPEN_MODS_PAGE -> openPage(ref, store, new ConfigSelectorPage(playerRef));
+            case CLOSE -> this.close();
+            default -> {
+                playerRef.sendMessage(Message.raw("Invalid action, please contact the developer."));
                 this.sendUpdate();
-        }
-    }
-
-    public boolean hasCapital(String str) {
-        for (char c : str.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                return true;
             }
         }
-        return false;
     }
 }

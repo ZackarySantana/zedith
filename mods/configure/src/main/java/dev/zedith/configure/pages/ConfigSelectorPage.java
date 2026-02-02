@@ -156,7 +156,7 @@ public class ConfigSelectorPage extends InteractiveCustomUIPage<ConfigEvent> {
                 break;
             case ConfigEventType.CHANGE_PAGE_SIZE:
                 if (data.hasDataParseError()) {
-                    if (!data.dataIsEmpty()) {
+                    if (!data.isDataEmpty()) {
                         cmds.set(
                                 "#PageSize.Value",
                                 Integer.toString(this.pageSize)

@@ -3,11 +3,13 @@ package dev.zedith.configure;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.builder.BuilderField;
+import com.hypixel.hytale.codec.validation.Validator;
 import dev.zedith.configure.config.WrappedConfig;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
@@ -17,6 +19,7 @@ import java.util.function.Supplier;
 public class Configure {
 
     protected final static Map<String, WrappedConfig<?>> configs = new ConcurrentHashMap<>();
+    private final static Map<Class<?>, Function<?, ?>> codecAppenders = new ConcurrentHashMap<>();
 
     public static void registerConfig(WrappedConfig<?> config) {
         configs.put(config.metadata().name().toLowerCase(), config);
@@ -26,15 +29,15 @@ public class Configure {
         configs.put(name.toLowerCase(), config);
     }
 
-    public static <T> BuilderCodec<T> build(Class<T> type, Supplier<T> constructor) {
+    public static <T> BuilderCodec.Builder<T> build(Class<T> type, Supplier<T> constructor) {
         BuilderCodec.Builder<T> b = BuilderCodec.builder(type, constructor);
 
         Field[] fields = type.getDeclaredFields();
 
         for (Field f : fields) {
-            ConfigValue[] values = f.getAnnotationsByType(ConfigValue.class);
+            CodecValue[] values = f.getAnnotationsByType(CodecValue.class);
 
-            for (ConfigValue value : values) {
+            for (CodecValue value : values) {
                 String key = capitalize(!value.key().isEmpty() ? value.key() : f.getName());
                 BuilderField.FieldBuilder<T, ?, BuilderCodec.Builder<T>> stage;
 
@@ -57,11 +60,29 @@ public class Configure {
                     throw new IllegalStateException("Unsupported field type: " + f.getType());
                 }
 
+                Class<? extends Validator> validator = value.validator();
+                if (validator != null) {
+                    try {
+                        Field instanceField = validator.getField("INSTANCE");
+                        int mods = instanceField.getModifiers();
+                        if (Modifier.isStatic(mods) && Validator.class.isAssignableFrom(instanceField.getType())) {
+                            Object instance = instanceField.get(null);
+                            if (instance instanceof Validator) {
+                                stage.addValidator((Validator) instance);
+                            }
+                        }
+                    } catch (NoSuchFieldException _) {
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+
                 stage.documentation(value.documentation()).add();
             }
         }
 
-        return b.build();
+        return b;
     }
 
     private static <T, V> Accessors<T, V> accessors(Class<T> owner, Field field, Class<V> expectedType) {

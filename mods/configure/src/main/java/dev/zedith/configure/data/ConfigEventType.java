@@ -7,8 +7,9 @@ public enum ConfigEventType {
     CLOSE,
     SAVE,
     OPEN_MODS_PAGE,
+    RESET_VALUE(Scope.VALUE),
     SET_PAGE(Scope.PAGE, DataType.INTEGER),
-    RESET_VALUE(Scope.PAGE, DataType.INTEGER),
+    SET_PAGE2(Scope.PAGE, DataType.INTEGER),
     OPEN_MOD_PAGE(Scope.PAGE, DataType.INTEGER),
     FILTER_KEYS(Scope.PAGE, DataType.STRING, Codec.STRING),
     CHANGE_PAGE_SIZE(Scope.PAGE, DataType.INTEGER, Codec.STRING),
@@ -27,6 +28,12 @@ public enum ConfigEventType {
 
     ConfigEventType() {
         this.scope = Scope.PAGE;
+        this.dataType = null;
+        this.codec = null;
+    }
+
+    ConfigEventType(Scope scope) {
+        this.scope = scope;
         this.dataType = null;
         this.codec = null;
     }

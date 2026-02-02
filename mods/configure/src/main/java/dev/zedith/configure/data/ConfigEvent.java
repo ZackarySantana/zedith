@@ -62,6 +62,10 @@ public class ConfigEvent {
         return EventData.of(action.toString(), value);
     }
 
+    public static EventData valueEvent(ConfigEventType action, int index) {
+        return EventData.of(action.toString() + index, "");
+    }
+
     public static EventData valueEvent(ConfigEventType action, int index, String value) {
         return EventData.of(action.toString() + index, value);
     }
@@ -118,7 +122,7 @@ public class ConfigEvent {
         return this.dataParseError;
     }
 
-    public boolean dataIsEmpty() {
+    public boolean isDataEmpty() {
         return this.rawVal == null || this.rawVal.isEmpty();
     }
 }

@@ -87,7 +87,7 @@ class Element {
             events.addEventBinding(
                     CustomUIEventBindingType.Activating,
                     "%s #Reset".formatted(selector()),
-                    ConfigEvent.pageEvent(ConfigEventType.RESET_VALUE, Integer.toString(index))
+                    ConfigEvent.valueEvent(ConfigEventType.RESET_VALUE, index, Integer.toString(index))
             );
         }
 
