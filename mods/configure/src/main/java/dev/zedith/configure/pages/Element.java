@@ -63,6 +63,10 @@ class Element {
             return item;
         }
 
+        public static ConfigItem getConfigItem(UICommandBuilder cmds, UIEventBuilder events, int i) {
+            return new ConfigItem(cmds, events, i);
+        }
+
         public static ModItem newModItem(UICommandBuilder cmds, UIEventBuilder events, int i) {
             cmds.append(selector, modItemPath);
             return new ModItem(cmds, events, i);
@@ -91,37 +95,39 @@ class Element {
             );
         }
 
-        public void setValue(BsonValue value) {
-            ConfigEventType eventType;
-            Field field;
-            switch (value.getBsonType()) {
-                case STRING:
-                    eventType = ConfigEventType.STR_CONFIG_VALUE_CHANGE_EVENT;
-                    field = new Field(cmds, events, "%s #ConfigStringValue".formatted(selector()));
-                    field.setValue(value.asString().getValue());
-                    field.setVisible(true);
-                    break;
-                case INT32:
-                    eventType = ConfigEventType.INT_CONFIG_VALUE_CHANGE_EVENT;
-                    field = new Field(cmds, events, "%s #ConfigIntValue".formatted(selector()));
-                    field.setValue(value.asInt32().getValue());
-                    field.setVisible(true);
-                    break;
-                case BOOLEAN:
-                    eventType = ConfigEventType.BOOL_CONFIG_VALUE_CHANGE_EVENT;
-                    field = new Field(cmds, events, "%s #ConfigCheckbox".formatted(selector()));
-                    field.setValue(value.asBoolean().getValue());
-                    field.setVisible(true, "%s #ConfigCheckboxContainer".formatted(selector()));
-                    break;
-                default:
+        private Field getField(BsonValue value) {
+            return switch (value.getBsonType()) {
+                case STRING -> new StringField(cmds, events, selector());
+                case INT32 -> new IntField(cmds, events, selector());
+                case BOOLEAN -> new BooleanField(cmds, events, selector());
+                default -> {
                     // TODO: Replace this with the hytale logger.
                     System.out.println("Unhandled BSON type: " + value.getBsonType().name());
-                    return;
+                    yield null;
+                }
+            };
+        }
+
+        public void setValue(BsonValue value) {
+            Field field = getField(value);
+            if (field == null) {
+                // TODO: Maybe return error?
+                return;
+            }
+            field.setValue(value);
+            field.setVisible(true);
+        }
+
+        public void registerValueChangedEvent(BsonValue value) {
+            Field field = getField(value);
+            if (field == null) {
+                // TODO: Maybe return error?
+                return;
             }
 
             field.registerEvent(
                     CustomUIEventBindingType.ValueChanged,
-                    ConfigEvent.valueEvent(eventType, index, "%s.Value".formatted(field.selector()))
+                    ConfigEvent.valueEvent(field.eventType, index, "%s.Value".formatted(field.selector()))
             );
         }
     }
@@ -144,30 +150,87 @@ class Element {
         }
     }
 
-    private record Field(UICommandBuilder cmds, UIEventBuilder events, String selector) {
+    private static final class StringField extends Field {
 
-        public void setValue(String value) {
-            cmds.set("%s.Value".formatted(selector()), value);
+        private StringField(UICommandBuilder cmds, UIEventBuilder events, String parentSelector) {
+            super(cmds, events, parentSelector, ConfigEventType.STR_CONFIG_VALUE_CHANGE_EVENT);
         }
 
-        public void setValue(int value) {
-            cmds.set("%s.Value".formatted(selector()), Integer.toString(value));
+        @Override
+        public void setValue(BsonValue value) {
+            cmds.set("%s.Value".formatted(selector()), value.asString().getValue());
         }
 
-        public void setValue(boolean value) {
-            cmds.set("%s.Value".formatted(selector()), value);
+        @Override
+        public String selector() {
+            return "%s #ConfigStringValue".formatted(parentSelector);
+        }
+    }
+
+    private static final class IntField extends Field {
+
+        private IntField(UICommandBuilder cmds, UIEventBuilder events, String parentSelector) {
+            super(cmds, events, parentSelector, ConfigEventType.INT_CONFIG_VALUE_CHANGE_EVENT);
+        }
+
+        @Override
+        public void setValue(BsonValue value) {
+            cmds.set("%s.Value".formatted(selector()), Integer.toString(value.asInt32().getValue()));
+        }
+
+        @Override
+        public String selector() {
+            return "%s #ConfigIntValue".formatted(parentSelector);
+        }
+    }
+
+    private static final class BooleanField extends Field {
+
+        private BooleanField(UICommandBuilder cmds, UIEventBuilder events, String parentSelector) {
+            super(cmds, events, parentSelector, ConfigEventType.BOOL_CONFIG_VALUE_CHANGE_EVENT);
+        }
+
+        @Override
+        public void setValue(BsonValue value) {
+            cmds.set("%s.Value".formatted(selector()), value.asBoolean().getValue());
+        }
+
+        @Override
+        public String selector() {
+            return "%s #ConfigCheckbox".formatted(parentSelector);
+        }
+
+        @Override
+        public void setVisible(boolean value) {
+            cmds.set("%s #ConfigCheckboxContainer.Visible".formatted(parentSelector), value);
+        }
+    }
+
+    private abstract static class Field {
+        final UICommandBuilder cmds;
+        final UIEventBuilder events;
+        final ConfigEventType eventType;
+        final String parentSelector;
+
+        private Field(UICommandBuilder cmds, UIEventBuilder events, String parentSelector, ConfigEventType eventType) {
+            this.cmds = cmds;
+            this.events = events;
+            this.parentSelector = parentSelector;
+            this.eventType = eventType;
+        }
+
+        public void setValue(BsonValue value) {
+            throw new RuntimeException("setValue should not be called directly.");
         }
 
         public void setVisible(boolean value) {
             cmds.set("%s.Visible".formatted(selector()), value);
         }
 
-        public void setVisible(boolean value, String overrideSelector) {
-            cmds.set("%s.Visible".formatted(overrideSelector), value);
+        public void registerEvent(CustomUIEventBindingType eventType, EventData eventData) {
+            events.addEventBinding(eventType, selector(), eventData);
         }
 
-        public void registerEvent(CustomUIEventBindingType eventType, EventData eventData) {
-            events.addEventBinding(eventType, selector, eventData);
-        }
+        public abstract String selector();
     }
 }

@@ -10,10 +10,12 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.zedith.configure.config.WrappedConfig;
 import dev.zedith.configure.data.ConfigEvent;
 import dev.zedith.configure.data.ConfigEventType;
@@ -141,6 +143,7 @@ public class ConfigPage<T> extends InteractiveCustomUIPage<ConfigEvent> {
             }
             item.setConfigKey(key);
             item.setValue(docValue);
+            item.registerValueChangedEvent(docValue);
             item.setResetButton();
         }
     }
@@ -156,28 +159,20 @@ public class ConfigPage<T> extends InteractiveCustomUIPage<ConfigEvent> {
         UICommandBuilder cmds = new UICommandBuilder();
         UIEventBuilder events = new UIEventBuilder();
 
-        Consumer<BsonValue> setValue = (value) -> {
-            String selector;
-            Consumer<BsonValue> setToOld;
-            if (value.isString()) {
-                selector = "#ListItems[%d] #ConfigStringValue.Value".formatted(data.getIndexOnPage());
-                setToOld = (toValue) -> cmds.set(selector, toValue.asString().getValue());
-            } else if (value.isInt32()) {
-                selector = "#ListItems[%d] #ConfigIntValue.Value".formatted(data.getIndexOnPage());
-                setToOld = (toValue) -> cmds.set(selector, Integer.toString(toValue.asInt32().getValue()));
-            } else if (value.isBoolean()) {
-                selector = "#ListItems[%d] #ConfigCheckbox.Value".formatted(data.getIndexOnPage());
-                setToOld = (toValue) -> cmds.set(selector, toValue.asBoolean().getValue());
-            } else {
-                // TODO: Error case.
-                this.sendUpdate(cmds);
-                return;
-            }
+        Consumer<BsonValue> setConfigItemValue = (value) -> {
+            Element.ConfigItem item = Element.ListItems.getConfigItem(cmds, events, data.getIndexOnPage());
 
             BsonValue currentValue = currentDocument.get(key);
             if (data.hasDataParseError()) {
                 if (!data.isDataEmpty()) {
-                    setToOld.accept(currentValue);
+                    item.setValue(currentValue);
+                    errorNotification(Message.raw(
+                            "That is an invalid value for that field."
+                    ));
+                } else {
+                    errorNotification(Message.raw(
+                            "This value cannot be empty. If left empty, the last known value will be used."
+                    ));
                 }
 
                 this.sendUpdate(cmds);
@@ -190,22 +185,24 @@ public class ConfigPage<T> extends InteractiveCustomUIPage<ConfigEvent> {
             } catch (CodecValidationException e) {
                 currentDocument.replace(key, currentValue);
                 if (!data.isDataEmpty()) {
-                    setToOld.accept(currentValue);
+                    item.setValue(currentValue);
                 }
+
+                validationErrorNotification(Message.raw(e.getMessage()));
 
                 this.sendUpdate(cmds);
                 return;
             }
 
-            setToOld.accept(value);
+            item.setValue(value);
             this.sendUpdate(cmds);
         };
 
         switch (data.getAction()) {
-            case STR_CONFIG_VALUE_CHANGE_EVENT -> setValue.accept(new BsonString(data.getStrVal()));
-            case INT_CONFIG_VALUE_CHANGE_EVENT -> setValue.accept(new BsonInt32(data.getIntVal()));
-            case BOOL_CONFIG_VALUE_CHANGE_EVENT -> setValue.accept(new BsonBoolean(data.getBoolVal()));
-            case RESET_VALUE -> setValue.accept(defaultDocument.get(key));
+            case STR_CONFIG_VALUE_CHANGE_EVENT -> setConfigItemValue.accept(new BsonString(data.getStrVal()));
+            case INT_CONFIG_VALUE_CHANGE_EVENT -> setConfigItemValue.accept(new BsonInt32(data.getIntVal()));
+            case BOOL_CONFIG_VALUE_CHANGE_EVENT -> setConfigItemValue.accept(new BsonBoolean(data.getBoolVal()));
+            case RESET_VALUE -> setConfigItemValue.accept(defaultDocument.get(key));
             case FILTER_KEYS -> {
                 this.filterString = data.getStrVal();
                 this.filteredKeys = codecKeys.stream().filter(
@@ -253,5 +250,23 @@ public class ConfigPage<T> extends InteractiveCustomUIPage<ConfigEvent> {
                 this.sendUpdate();
             }
         }
+    }
+
+    public void validationErrorNotification(Message message) {
+        NotificationUtil.sendNotification(
+                playerRef.getPacketHandler(),
+                Message.raw("Validation error"),
+                message,
+                new ItemStack("Furniture_Dungeon_Chest_Epic", 1).toPacket()
+        );
+    }
+
+    public void errorNotification(Message message) {
+        NotificationUtil.sendNotification(
+                playerRef.getPacketHandler(),
+                Message.raw("An error occurred."),
+                message,
+                new ItemStack("Furniture_Tavern_Chest_Small", 1).toPacket()
+        );
     }
 }
